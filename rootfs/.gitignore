@@ -1,0 +1,10 @@
+bin/*
+sbin/*
+lib/*
+share/*
+usr/lib/*
+usr/bin/*
+usr/sbin/*
+
+!.gitignore
+!lib/modules

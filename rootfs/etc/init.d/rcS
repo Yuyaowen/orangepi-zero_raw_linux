@@ -1,0 +1,7 @@
+#! /bin/sh
+
+dmesg -n 1
+
+mount -a
+mount -o remount,rw /
+mount /dev/mmcblk0p1 /boot
