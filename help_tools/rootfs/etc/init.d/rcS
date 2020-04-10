@@ -9,6 +9,8 @@ dmesg -n 1
 ifconfig eth0 up
 udhcpc &
 
+ntpd
+
 /root/resize.sh #Remove this line
 rm /root/resize.sh #Remove this line
 
