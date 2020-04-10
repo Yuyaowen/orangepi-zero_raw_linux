@@ -6,3 +6,6 @@ mount /dev/mmcblk0p1 /boot
 
 dmesg -n 1
 
+/root/resize.sh #Remove this line
+rm /root/resize.sh #Remove this line
+
