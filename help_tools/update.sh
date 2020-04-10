@@ -14,6 +14,6 @@ cp -rfv ${BUSYBOX_INSTALL}/* ./rootfs/
 cp -rfv ${CROSS_COMPILE_PATH}/lib/*.so* ./rootfs/lib/
 cp -rfv ${CROSS_COMPILE_PATH}/libc/lib/*.so* ./rootfs/lib/
 
-cp -rfv ${UTILS_PATH}/e2fsprogs/_install/* ./rootfs/
+cp -rfv ${UTILS_PATH}/e2fsprogs-1.45.6/_install/sbin/resize2fs ./rootfs/sbin/
 
 ./makeimage.sh
