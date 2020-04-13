@@ -14,6 +14,7 @@ Config.in
 #
 !.gitignore
 !.config
+!/Config.in
 
 #
 # Normal output
