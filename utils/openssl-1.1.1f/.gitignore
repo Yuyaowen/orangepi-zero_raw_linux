@@ -1,0 +1,15 @@
+_install
+configdata.pm
+*.a
+*.map
+*.pc
+*.so
+*.so*
+*.o
+*.d
+*.tmp
+shlib_wrap.sh
+c_rehash
+
+/Makefile
+!Makefile

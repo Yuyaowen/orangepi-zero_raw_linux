@@ -1,0 +1,12 @@
+*.o
+*.d
+*.bak
+build.wpa_supplicant
+fi.w1.wpa_supplicant.service
+wpa_supplicant.service
+wpa_supplicant@.service
+wpa_supplicant-nl80211@.service
+wpa_supplicant-wired@.service
+wpa_cli
+wpa_passphrase
+wpa_supplicant

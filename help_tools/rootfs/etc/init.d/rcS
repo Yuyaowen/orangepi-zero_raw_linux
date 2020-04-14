@@ -4,13 +4,17 @@ mount -a
 mount -o remount,rw /
 mount /dev/mmcblk0p1 /boot
 
+/root/resize.sh #Remove this line
+rm /root/resize.sh #Remove this line
 dmesg -n 1
 
 ifconfig eth0 up
 udhcpc &
 
+modprobe xradio_wlan
+sleep 0.2
+ifconfig wlan0 up
+wpa_supplicant -Dnl80211 -iwlan0 -c/etc/wpa_supplicant.conf -B
+udhcpc -i wlan0 &
+
 ntpd
-
-/root/resize.sh #Remove this line
-rm /root/resize.sh #Remove this line
-

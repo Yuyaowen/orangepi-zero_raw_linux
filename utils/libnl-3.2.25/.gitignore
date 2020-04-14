@@ -1,0 +1,13 @@
+_install
+*.log
+*.status
+*.sym
+*.pc
+libtool
+Makefile
+.deps
+.libs
+.dirstamp
+*.la
+*.lo
+*.o
