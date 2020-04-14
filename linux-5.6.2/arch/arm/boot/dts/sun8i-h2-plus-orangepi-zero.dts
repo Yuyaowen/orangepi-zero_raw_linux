@@ -184,6 +184,14 @@
 	};
 };
 
+&codec {
+	status = "okay";
+	allwinner,audio-routing =
+		"Line Out", "LINEOUT",
+		"MIC1", "Mic",
+		"Mic",  "MBIAS";
+};
+
 &ohci0 {
 	status = "okay";
 };
