@@ -1,0 +1,11 @@
+_install
+config.log
+config.status
+Makefile
+version
+*.gmo
+.deps
+*.rules
+*.7
+*.o
+*.service

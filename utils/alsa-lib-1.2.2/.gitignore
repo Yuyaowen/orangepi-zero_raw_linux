@@ -1,0 +1,13 @@
+_install
+config.log
+config.status
+Makefile
+.deps
+.libs
+aserver
+*.o
+*.lo
+*.la
+*.pc
+*.spec
+stamp-h1
