@@ -219,15 +219,18 @@
 	tft-lcd@0 {
 		compatible = "ilitek,ili9488";
 		reg = <0>;
-		spi-max-frequency = <72000000>;
+		spi-max-frequency = <74999000>;
 
-		rotate = <270>;
-		//fps = <30>;
+		reset-gpios = <&pio 0 3 GPIO_ACTIVE_HIGH>;
+		dc-gpios = <&pio 0 10 GPIO_ACTIVE_HIGH>;
+
+		rotate = <0>;
+		fps = <60>;
 		buswidth = <8>;
 		regwidth = <8>;
-		reset-gpios = <&pio 0 7 GPIO_ACTIVE_HIGH>;
-		dc-gpios = <&pio 0 10 GPIO_ACTIVE_HIGH>;
-		debug = <0>;
+		width = <320>;
+		height = <480>;
+		bpp = <16>;
 	};
 };
 
