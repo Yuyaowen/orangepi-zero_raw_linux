@@ -124,6 +124,12 @@
 		reset-gpios = <&r_pio 0 7 GPIO_ACTIVE_LOW>;
 		post-power-on-delay-ms = <50>;
 	};
+
+	spi1_cs1: spi1_cs1 {
+		pins = "PA10";
+		function = "gpio_out";
+		output-high;
+	};
 };
 
 &cpu0 {
@@ -223,6 +229,10 @@
 
 &spi1 {
 	status = "okay";
+	pinctrl-names = "default", "default";
+	//pinctrl-1 = <&spi1_cs1>;
+	num-cs = <2>;
+	cs-gpios = <0>, <&pio 0 10 0>;
 
 	tft-lcd@0 {
 		compatible = "ilitek,ili9488";
@@ -239,6 +249,29 @@
 		width = <320>;
 		height = <480>;
 		bpp = <16>;
+	};
+
+	touchscreen@1 {
+		compatible = "ti,ads7846";
+		reg = <1>;
+		spi-max-frequency = <500000>;
+		interrupt-parent = <&pio>;
+		interrupts = <0 2 2>;
+		pendown-gpio = <&pio 0 2 0>;
+
+		/* driver defaults, optional */
+		ti,x-min = /bits/ 16 <176>;
+		ti,y-min = /bits/ 16 <300>;
+		ti,x-max = /bits/ 16 <3913>;
+		ti,y-max = /bits/ 16 <3947>;
+		ti,pressure-min = /bits/ 16 <0>;
+		ti,pressure-max = /bits/ 16 <255>;
+		ti,x-plate-ohms = /bits/ 16 <180>;
+		ti,debounce_max = /bits/ 16 <15000>;
+		ti,debounce_tol = /bits/ 16 <65535>;
+		ti,debounce_rep = /bits/ 16 <100>;
+		ti,vref-delay-usecs = /bits/ 16 <450>;
+		ti,keep_vref_on =  <1>;
 	};
 };
 
