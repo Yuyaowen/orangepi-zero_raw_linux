@@ -68,7 +68,7 @@
 
 	leds {
 		compatible = "gpio-leds";
-		status = "disabled";
+		status = "okay";
 
 		pwr_led {
 			label = "orangepi:green:status";
