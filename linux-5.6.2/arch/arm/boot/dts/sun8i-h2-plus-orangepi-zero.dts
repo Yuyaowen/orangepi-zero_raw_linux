@@ -125,10 +125,17 @@
 		post-power-on-delay-ms = <50>;
 	};
 
-	spi1_cs1: spi1_cs1 {
-		pins = "PA10";
-		function = "gpio_out";
-		output-high;
+	spi2: spi-gpio {
+		compatible = "spi-gpio";
+		#address-cells = <0x1>;
+		#size-cells = <0x0>;
+		ranges;
+
+		sck-gpios = <&pio 0 18 GPIO_ACTIVE_HIGH>;
+		miso-gpios = <&pio 0 19 GPIO_ACTIVE_HIGH>;
+		mosi-gpios = <&pio 0 1 GPIO_ACTIVE_HIGH>;
+		cs-gpios = <&pio 0 10 GPIO_ACTIVE_HIGH>;
+		num-chipselects = <1>;
 	};
 };
 
@@ -229,10 +236,6 @@
 
 &spi1 {
 	status = "okay";
-	pinctrl-names = "default", "default";
-	//pinctrl-1 = <&spi1_cs1>;
-	num-cs = <2>;
-	cs-gpios = <0>, <&pio 0 10 0>;
 
 	tft-lcd@0 {
 		compatible = "ilitek,ili9488";
@@ -241,6 +244,7 @@
 
 		reset-gpios = <&pio 0 3 GPIO_ACTIVE_HIGH>;
 		dc-gpios = <&pio 0 7 GPIO_ACTIVE_HIGH>;
+		status = "okay";
 
 		rotate = <270>;
 		fps = <60>;
@@ -251,27 +255,28 @@
 		bpp = <16>;
 	};
 
-	touchscreen@1 {
+};
+
+&spi2 {
+	status = "okay";
+
+	touchscreen@0 {
 		compatible = "ti,ads7846";
-		reg = <1>;
-		spi-max-frequency = <500000>;
+		reg = <0>;
+		spi-max-frequency = <2000000>;
 		interrupt-parent = <&pio>;
 		interrupts = <0 2 2>;
 		pendown-gpio = <&pio 0 2 0>;
+		wakeup-source;
+	};
+};
 
-		/* driver defaults, optional */
-		ti,x-min = /bits/ 16 <176>;
-		ti,y-min = /bits/ 16 <300>;
-		ti,x-max = /bits/ 16 <3913>;
-		ti,y-max = /bits/ 16 <3947>;
-		ti,pressure-min = /bits/ 16 <0>;
-		ti,pressure-max = /bits/ 16 <255>;
-		ti,x-plate-ohms = /bits/ 16 <180>;
-		ti,debounce_max = /bits/ 16 <15000>;
-		ti,debounce_tol = /bits/ 16 <65535>;
-		ti,debounce_rep = /bits/ 16 <100>;
-		ti,vref-delay-usecs = /bits/ 16 <450>;
-		ti,keep_vref_on =  <1>;
+&i2c0 {
+	status = "okay";
+
+	gpio@74 {
+		compatible = "nxp,pca9539";
+		reg = <0x74>;
 	};
 };
 
