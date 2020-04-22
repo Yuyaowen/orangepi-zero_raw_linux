@@ -129,12 +129,11 @@
 		compatible = "spi-gpio";
 		#address-cells = <0x1>;
 		#size-cells = <0x0>;
-		ranges;
 
 		sck-gpios = <&pio 0 18 GPIO_ACTIVE_HIGH>;
 		miso-gpios = <&pio 0 19 GPIO_ACTIVE_HIGH>;
 		mosi-gpios = <&pio 0 1 GPIO_ACTIVE_HIGH>;
-		cs-gpios = <&pio 0 10 GPIO_ACTIVE_HIGH>;
+		cs-gpios = <&pio 0 10 GPIO_ACTIVE_LOW>;
 		num-chipselects = <1>;
 	};
 };
@@ -268,15 +267,6 @@
 		interrupts = <0 2 2>;
 		pendown-gpio = <&pio 0 2 0>;
 		wakeup-source;
-	};
-};
-
-&i2c0 {
-	status = "okay";
-
-	gpio@74 {
-		compatible = "nxp,pca9539";
-		reg = <0x74>;
 	};
 };
 
