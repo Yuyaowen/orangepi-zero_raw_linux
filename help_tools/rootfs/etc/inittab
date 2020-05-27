@@ -1,6 +1,6 @@
 # /etc/inittab
 ::sysinit:/etc/init.d/rcS
-ttyS0::sysinit:/bin/ash
+ttyS0::sysinit:-/bin/ash
 ::ctrlaltdel:/sbin/reboot
 ::shutdown:/bin/umount -a -r
 
