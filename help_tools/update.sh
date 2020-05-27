@@ -3,7 +3,7 @@
 LINUX_VER="5.6.2"
 
 # Set PATHs
-LINUX_KERNEL='../linux-5.6.2'
+LINUX_KERNEL="../linux-${LINUX_VER}"
 UBOOT_BIN='../u-boot-2019.10'
 ZIMAGE_BIN="${LINUX_KERNEL}/arch/arm/boot"
 BUSYBOX_INSTALL='../busybox-1.31.1/_install'
@@ -38,5 +38,7 @@ cp -v ${UTILS_PATH}/libnl-3.2.25/_install/lib/libnl-genl-3.so.200.20.0 ./rootfs/
 cp -v ${UTILS_PATH}/openssl-1.1.1f/_install/lib/libssl.so.1.1 ./rootfs/lib/
 cp -v ${UTILS_PATH}/openssl-1.1.1f/_install/lib/libcrypto.so.1.1 ./rootfs/lib/
 # End: For WiFi
+
+cp -v tm1637-4digit.sh ./rootfs/usr/bin/
 
 ./makeimage.sh
