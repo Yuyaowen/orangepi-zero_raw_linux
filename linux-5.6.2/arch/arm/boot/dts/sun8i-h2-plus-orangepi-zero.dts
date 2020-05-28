@@ -91,6 +91,11 @@
 		default-on;
 	};
 
+	single_wire@0 {
+		compatible = "w1-gpio";
+		gpios = <&pio 0 10 GPIO_ACTIVE_HIGH>;
+	};
+
 	vdd_wifi: vdd_wifi {
 		compatible = "regulator-fixed";
 		regulator-name = "wifi";
@@ -135,6 +140,8 @@
 		mosi-gpios = <&pio 0 1 GPIO_ACTIVE_HIGH>;
 		cs-gpios = <&pio 0 10 GPIO_ACTIVE_LOW>;
 		num-chipselects = <1>;
+
+		status = "disabled";
 	};
 };
 
@@ -257,7 +264,7 @@
 };
 
 &spi2 {
-	status = "okay";
+	status = "disabled";
 
 	touchscreen@0 {
 		compatible = "ti,ads7846";
