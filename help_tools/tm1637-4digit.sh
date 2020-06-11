@@ -129,6 +129,84 @@ code_convert()
 	fi
 }
 
+# Usage: tm1637_display_face wait_time
+tm1637_display_face()
+{
+	local wait=$1
+
+	tm1637_start
+	tm1637_write_byte 0x44
+	tm1637_ack
+	tm1637_stop
+
+	############# 1st dark #############
+	tm1637_start
+	tm1637_write_byte 0xc0 # 1st addr
+	tm1637_ack
+	tm1637_write_byte 0x00
+	tm1637_ack
+	tm1637_stop
+	############# 2st o #############
+	tm1637_start
+	tm1637_write_byte 0xc1 # 2st addr
+	tm1637_ack
+	tm1637_write_byte 0xe3
+	tm1637_ack
+	tm1637_stop
+	############# 3st o #############
+	tm1637_start
+	tm1637_write_byte 0xc2 # 3st addr
+	tm1637_ack
+	tm1637_write_byte 0xe3
+	tm1637_ack
+	tm1637_stop
+	############# 4st dark #############
+	tm1637_start
+	tm1637_write_byte 0xc3 # 4st addr
+	tm1637_ack
+	tm1637_write_byte 0x00
+	tm1637_ack
+	tm1637_stop
+
+	sleep $wait
+
+	tm1637_start
+	tm1637_write_byte 0x44
+	tm1637_ack
+	tm1637_stop
+
+	############# 1st dark #############
+	tm1637_start
+	tm1637_write_byte 0xc0 # 1st addr
+	tm1637_ack
+	tm1637_write_byte 0x00
+	tm1637_ack
+	tm1637_stop
+	############# 2st - #############
+	tm1637_start
+	tm1637_write_byte 0xc1 # 2st addr
+	tm1637_ack
+	tm1637_write_byte 0x40
+	tm1637_ack
+	tm1637_stop
+	############# 3st - #############
+	tm1637_start
+	tm1637_write_byte 0xc2 # 3st addr
+	tm1637_ack
+	tm1637_write_byte 0x40
+	tm1637_ack
+	tm1637_stop
+	############# 4st dark #############
+	tm1637_start
+	tm1637_write_byte 0xc3 # 4st addr
+	tm1637_ack
+	tm1637_write_byte 0x00
+	tm1637_ack
+	tm1637_stop
+
+	sleep $wait
+}
+
 # Usage: tm1637_display_time <HH> <MM> <show_second_flag(0/1)>
 tm1637_display_time()
 {
@@ -193,8 +271,13 @@ tm1637_display_time()
 	tm1637_stop
 }
 
-echo "Start time: `date`"
+#echo "Start time: `date`"
 init_pins
+for i in `seq 1 10`
+do
+	tm1637_display_face 1
+done
+
 while true
 do
 	hour=`date "+%H"`
