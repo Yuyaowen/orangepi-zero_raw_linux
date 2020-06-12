@@ -4,6 +4,7 @@
 # Don't connect it to I2C bus, it will broke the bus!
 # And the busybox's ash don't support for fucking array!
 
+######################### Start: For GPIO #############################
 # Define pins:
 clk_pin_num=199
 dio_pin_num=198
@@ -48,7 +49,9 @@ get_dio()
 {
 	cat /sys/class/gpio/gpio${dio_pin_num}/value
 }
+######################### End: For GPIO #############################
 
+##################### Start: For Sequential #########################
 tm1637_start()
 {
 	set_dio_dir_out
@@ -83,7 +86,7 @@ tm1637_stop()
 	set_dio 1
 }
 
-# Using: "tm1637_write_byte 0xff"
+# Using: "tm1637_write_byte <Byte>"
 tm1637_write_byte()
 {
 	local dat=$1
@@ -99,9 +102,43 @@ tm1637_write_byte()
 		set_clk 1
 	done
 }
+###################### End: For Sequential ##########################
+
+#################### Start: For Chip Driver #########################
+tm1637_init()
+{
+	init_pins
+
+	tm1637_start
+	tm1637_write_byte 0x44
+	tm1637_ack
+	tm1637_stop
+
+	tm1637_start
+	tm1637_write_byte 0x8f
+	tm1637_ack
+	tm1637_stop
+}
+
+# Usage: tm1637_show_char <char_code> <position(0~3)>
+tm1637_show_char()
+{
+	local char_code=$1
+	local position=$2
+
+	tm1637_start
+	tm1637_write_byte 0xc$position 
+	tm1637_ack
+
+	tm1637_write_byte $char_code
+	tm1637_ack
+	tm1637_stop
+}
+#################### End: For Chip Driver #########################
 
 #num_code="0x3f 0x06 0x5b 0x4f 0x66 0x6d 0x7d 0x07 0x7f 0x6f 0x77 0x7c 0x39 0x5e 0x79 0x71"
 point_code=0x80
+# Usage: code_convert <0~9>
 code_convert()
 {
 	local num=$1
@@ -129,161 +166,68 @@ code_convert()
 	fi
 }
 
-# Usage: tm1637_display_face wait_time
-tm1637_display_face()
+# Usage: display_face <wait_time>
+display_face()
 {
 	local wait=$1
 
-	tm1637_start
-	tm1637_write_byte 0x44
-	tm1637_ack
-	tm1637_stop
-
-	############# 1st dark #############
-	tm1637_start
-	tm1637_write_byte 0xc0 # 1st addr
-	tm1637_ack
-	tm1637_write_byte 0x00
-	tm1637_ack
-	tm1637_stop
-	############# 2st o #############
-	tm1637_start
-	tm1637_write_byte 0xc1 # 2st addr
-	tm1637_ack
-	tm1637_write_byte 0xe3
-	tm1637_ack
-	tm1637_stop
-	############# 3st o #############
-	tm1637_start
-	tm1637_write_byte 0xc2 # 3st addr
-	tm1637_ack
-	tm1637_write_byte 0xe3
-	tm1637_ack
-	tm1637_stop
-	############# 4st dark #############
-	tm1637_start
-	tm1637_write_byte 0xc3 # 4st addr
-	tm1637_ack
-	tm1637_write_byte 0x00
-	tm1637_ack
-	tm1637_stop
-
+	tm1637_show_char 0x00 0 # 1st dark
+	tm1637_show_char 0xe3 1 # 2st o
+	tm1637_show_char 0xe3 2 # 3st o
+	tm1637_show_char 0x00 3 # 4st dark
 	sleep $wait
 
-	tm1637_start
-	tm1637_write_byte 0x44
-	tm1637_ack
-	tm1637_stop
-
-	############# 1st dark #############
-	tm1637_start
-	tm1637_write_byte 0xc0 # 1st addr
-	tm1637_ack
-	tm1637_write_byte 0x00
-	tm1637_ack
-	tm1637_stop
-	############# 2st - #############
-	tm1637_start
-	tm1637_write_byte 0xc1 # 2st addr
-	tm1637_ack
-	tm1637_write_byte 0x40
-	tm1637_ack
-	tm1637_stop
-	############# 3st - #############
-	tm1637_start
-	tm1637_write_byte 0xc2 # 3st addr
-	tm1637_ack
-	tm1637_write_byte 0x40
-	tm1637_ack
-	tm1637_stop
-	############# 4st dark #############
-	tm1637_start
-	tm1637_write_byte 0xc3 # 4st addr
-	tm1637_ack
-	tm1637_write_byte 0x00
-	tm1637_ack
-	tm1637_stop
-
+	tm1637_show_char 0x00 0 # 1st dark
+	tm1637_show_char 0x40 1 # 2st -
+	tm1637_show_char 0x40 2 # 3st -
+	tm1637_show_char 0x00 3 # 4st dark
 	sleep $wait
 }
 
-# Usage: tm1637_display_time <HH> <MM> <show_second_flag(0/1)>
-tm1637_display_time()
+# Usage: display_time <HH> <MM> <show_second_flag(0/1)>
+display_time()
 {
 	local hour=$1
 	local min=$2
 	local flag=$3
 	local data=
 
-	tm1637_start
-	tm1637_write_byte 0x44
-	tm1637_ack
-	tm1637_stop
-
-	############# 1st number #############
-	tm1637_start
-	tm1637_write_byte 0xc0 # 1st addr
-	tm1637_ack
-
 	data=`expr $hour / 10`
 	local code=`code_convert $data`
-	tm1637_write_byte $code
-	tm1637_ack
-	tm1637_stop
-
-	############# 2st number #############
-	tm1637_start
-	tm1637_write_byte 0xc1 # 2st addr
-	tm1637_ack
+	tm1637_show_char $code 0 # 1st
 
 	data=`expr $hour % 10`
 	local code=`code_convert $data`
 	[ $flag -eq 1 ] && code=$(($code | 0x80))
-	tm1637_write_byte $code
-	tm1637_ack
-	tm1637_stop
-
-	############# 3st number #############
-	tm1637_start
-	tm1637_write_byte 0xc2 # 3st addr
-	tm1637_ack
+	tm1637_show_char $code 1 # 2st
 
 	data=`expr $min / 10`
 	local code=`code_convert $data`
-	tm1637_write_byte $code
-	tm1637_ack
-	tm1637_stop
-
-	############# 4st number #############
-	tm1637_start
-	tm1637_write_byte 0xc3 # 4st addr
-	tm1637_ack
+	tm1637_show_char $code 2 # 3st
 
 	data=`expr $min % 10`
 	local code=`code_convert $data`
-	tm1637_write_byte $code
-	tm1637_ack
-	tm1637_stop
-
-	tm1637_start
-	tm1637_write_byte 0x8f
-	tm1637_ack
-	tm1637_stop
+	tm1637_show_char $code 3 # 4st
 }
 
 #echo "Start time: `date`"
-init_pins
-for i in `seq 1 10`
+tm1637_init
+for i in `seq 1 5`
 do
-	tm1637_display_face 1
+	display_face 1
 done
 
 while true
 do
 	hour=`date "+%H"`
 	min=`date "+%M"`
-	tm1637_display_time $hour $min 1
-	sleep 0.3s
-	tm1637_display_time $hour $min 0
-	sleep 0.7s
+	sec=`date "+%S"`
+	if [ $sec -lt 55 ]; then
+		display_time $hour $min 1
+		sleep 0.3s
+		display_time $hour $min 0
+		sleep 0.7s
+	else
+		display_face 1
+	fi
 done
